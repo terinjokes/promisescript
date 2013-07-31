@@ -1,0 +1,18 @@
+{
+  "name": "promisescript",
+  "version": "0.3.0",
+  "description": "Simple promise-based script loader for modern browsers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "script",
+    "promise"
+  ],
+  "author": "Terin Stock <terinjokes@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "promise": "~3.2.0"
+  }
+}
