@@ -4,12 +4,13 @@ var Promise = require('promise/core'),
 		cached = {};
 
 module.exports = function promisescript(src) {
+	var promise;
 	// if the script is cached, resolve with the original promise;
 	if (cached[src]) {
 		return cached[src];
 	}
 
-	return new Promise(function(resolve, reject) {
+	promise = new Promise(function(resolve, reject) {
 		function loadScript(script) {
 			script.onload = function() {
 				this.onload = this.onerror = null;
@@ -40,11 +41,12 @@ module.exports = function promisescript(src) {
 		script.async = true;
 		script.src = src;
 
-		cached[src] = this;
-
 		var loader = 'onload' in script ? loadScript : loadScriptIE;
 		loader(script);
 
 		head.appendChild(script);
 	});
+
+	cached[src] = promise;
+	return promise;
 };
