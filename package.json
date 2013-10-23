@@ -1,6 +1,6 @@
 {
   "name": "promisescript",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Simple promise-based script loader for modern browsers",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,16 @@
     "script",
     "promise"
   ],
-  "author": "Terin Stock <terinjokes@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terinjokes/promisescript.git"
+  },
+  "author": {
+    "name": "Terin Stock",
+    "email": "terinjokes@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
-    "promise": "~3.2.0"
+    "promise": "^3.2.0"
   }
 }
