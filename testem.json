@@ -1,10 +1,14 @@
 {
 	"framework": "mocha",
-	"serve_files": [ "browserified-tests.js" ],
+	"serve_files": [
+		"node_modules/es5-shim/es5-shim.js",
+		"browserified-tests.js"
+	],
 	"src_files": [
 		"index.js",
 		"tests/tests.js"
 	],
+	"test_page": "tests/index.mustache",
 	"before_tests": "browserify tests/tests.js -o browserified-tests.js",
 	"on_exit": "rm browserified-tests.js",
 	"launch_in_dev": ["chrome", "phantomjs", "safari"]

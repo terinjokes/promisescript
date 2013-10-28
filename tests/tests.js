@@ -1,9 +1,13 @@
 'use strict';
 /* globals describe, it */
-var expect = require('chai').expect,
+var chai = require('chai'),
+		expect = chai.expect,
+		chaiAsPromised = require('chai-as-promised'),
 		promisescript = require('../index'),
 		successURL = '/tests/fixtures/success.js',
 		failURL = '/tests/fixtures/404.js';
+
+chai.use(chaiAsPromised);
 
 describe('promisescript', function() {
 	it('should export a function', function() {
@@ -24,17 +28,11 @@ describe('promisescript', function() {
 
 	it('should be resolved if the URL loaded successfully', function(done) {
 		var promise = promisescript(successURL);
-		promise.then(function() {
-			done();
-		}, done);
+		expect(promise).to.be.fulfilled.and.notify(done);
 	});
 
 	it('should be rejected if the URL is not loaded successfully', function(done) {
 		var promise = promisescript(failURL);
-		promise.then(function() {
-			done(new Error('onFulfilled called'));
-		}, function() {
-			done();
-		});
+		expect(promise).to.be.rejected.and.notify(done);
 	});
 });
