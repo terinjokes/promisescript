@@ -1,39 +1,37 @@
 'use strict';
 var Promise = require('promise/core'),
-		doc = global.document,
-		cached = {};
+	doc = global.document,
+	cached = {};
 
-module.exports = function promisescript(src) {
-	var promise;
-	// if the script is cached, resolve with the original promise;
-	if (cached[src]) {
-		return cached[src];
-	}
+function loadScript(script) {
+	return new Promise(function(resolve, reject) {
+		script.onload = function() {
+			this.onload = this.onerror = null;
+			resolve();
+		};
 
-	promise = new Promise(function(resolve, reject) {
-		function loadScript(script) {
-			script.onload = function() {
-				this.onload = this.onerror = null;
-				resolve();
-			};
+		script.onerror = function() {
+			this.onload = this.onerror = null;
+			reject(new Error('Failed to load ' + script.src));
+		};
+	});
+}
 
-			script.onerror = function() {
-				this.onload = this.onerror = null;
-				reject(new Error('Failed to load ' + src));
-			};
-		}
+function loadScriptIE(script) {
+	return new Promise(function(resolve) {
+		script.onreadystatechange = function() {
+			if (this.readyState !== 'complete') {
+				return;
+			}
 
-		function loadScriptIE(script) {
-			script.onreadystatechange = function() {
-				if (this.readyState !== 'complete') {
-					return;
-				}
+			this.onreadystatechange = null;
+			resolve();
+		};
+	});
+}
 
-				this.onreadystatechange = null;
-				resolve();
-			};
-		}
-
+function scriptResolver(src) {
+	return new Promise(function(resolve) {
 		var head = doc.head || doc.getElementsByTagName('head')[0];
 		var script = doc.createElement('script');
 		script.type = 'text/javascript';
@@ -42,11 +40,42 @@ module.exports = function promisescript(src) {
 		script.src = src;
 
 		var loader = 'onload' in script ? loadScript : loadScriptIE;
-		loader(script);
+		resolve(loader(script));
 
 		head.appendChild(script);
 	});
+}
 
-	cached[src] = promise;
-	return promise;
+module.exports = function promisescript(srcs) {
+	var promises = [],
+		promise,
+		i,
+		length,
+		src;
+	if (typeof srcs === 'string') {
+		srcs = [srcs];
+	}
+
+	length = srcs.length;
+	for (i = 0; i < length; i++) {
+		src = srcs[i];
+
+		// if the script is cached, resolve with the original promise;
+		if (cached[src]) {
+			promises.push(cached[src]);
+			continue;
+		}
+
+		promise = scriptResolver(src);
+
+		cached[src] = promise;
+		promises.push(promise);
+	}
+
+	if (length === 1) {
+		return promises[0];
+	}
+
+	return promises;
 };
+
