@@ -1,7 +1,7 @@
 {
   "name": "promisescript",
   "description": "Simple promise-based script loader for modern browsers",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": {
     "name": "Terin Stock",
     "email": "terinjokes@gmail.com"
