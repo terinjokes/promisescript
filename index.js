@@ -1,5 +1,5 @@
 'use strict';
-var Promise = require('promise/core'),
+var Promise = require('es6-promise').Promise,
 	doc = global.document,
 	cached = {};
 
@@ -78,4 +78,3 @@ module.exports = function promisescript(srcs) {
 
 	return promises;
 };
-
