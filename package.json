@@ -6,6 +6,7 @@
     "name": "Terin Stock",
     "email": "terinjokes@gmail.com"
   },
+  "bugs": "https://github.com/terinjokes/promisescript/issues",
   "dependencies": {
     "es6-promise": "^1.0.0"
   },
@@ -14,6 +15,7 @@
     "chai-as-promised": "~4.1.0",
     "es5-shim": "~2.3.0"
   },
+  "homepage": "https://github.com/terinjokes/promisescript",
   "keywords": [
     "script",
     "promise"
