@@ -48,12 +48,15 @@ function scriptResolver(src) {
 
 module.exports = function promisescript(srcs) {
 	var promises = [],
+		shouldReturnArray = true,
 		promise,
 		i,
 		length,
 		src;
+
 	if (typeof srcs === 'string') {
 		srcs = [srcs];
+		shouldReturnArray = false
 	}
 
 	length = srcs.length;
@@ -72,7 +75,7 @@ module.exports = function promisescript(srcs) {
 		promises.push(promise);
 	}
 
-	if (length === 1) {
+	if (!shouldReturnArray) {
 		return promises[0];
 	}
 
