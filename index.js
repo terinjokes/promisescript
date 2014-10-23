@@ -1,10 +1,10 @@
 'use strict';
-var Promise = require('es6-promise').Promise,
+var ES6Promise = require('es6-promise').Promise,
 	doc = global.document,
 	cached = {};
 
 function loadScript(script) {
-	return new Promise(function(resolve, reject) {
+	return new ES6Promise(function(resolve, reject) {
 		script.onload = function() {
 			this.onload = this.onerror = null;
 			resolve();
@@ -18,7 +18,7 @@ function loadScript(script) {
 }
 
 function loadScriptIE(script) {
-	return new Promise(function(resolve) {
+	return new ES6Promise(function(resolve) {
 		script.onreadystatechange = function() {
 			if (this.readyState !== 'complete') {
 				return;
@@ -31,7 +31,7 @@ function loadScriptIE(script) {
 }
 
 function scriptResolver(src) {
-	return new Promise(function(resolve) {
+	return new ES6Promise(function(resolve) {
 		var head = doc.head || doc.getElementsByTagName('head')[0];
 		var script = doc.createElement('script');
 		script.type = 'text/javascript';
@@ -56,7 +56,7 @@ module.exports = function promisescript(srcs) {
 
 	if (typeof srcs === 'string') {
 		srcs = [srcs];
-		shouldReturnArray = false
+		shouldReturnArray = false;
 	}
 
 	length = srcs.length;
