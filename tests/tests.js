@@ -2,6 +2,7 @@
 /* globals describe, it */
 var assert = require('proclaim'),
 		promisescript = require('../index'),
+		_ = require('lodash'),
 		successURL = '/base/tests/fixtures/success.js',
 		failURL = '/base/tests/fixtures/404.js';
 
@@ -26,14 +27,14 @@ describe('promisescript', function() {
 			var promise = promisescript(successURL);
 			promise.then(function() {
 				done();
-			}).catch(done);
+			})['catch'](done);
 		});
 
 		it('should be rejected if the URL is not loaded successfully', function(done) {
 			var promise = promisescript(failURL);
 			promise.then(function() {
 				assert.fail('resolved', 'rejected', 'Promise should have been rejected');
-			}).catch(function() {
+			})['catch'](function() {
 				done();
 			});
 		});
@@ -52,7 +53,7 @@ describe('promisescript', function() {
 
 		it('should should be a promise in each position', function() {
 			var promises = promisescript([successURL, failURL]);
-			promises.forEach(function(promise) {
+			_.forEach(promises, function(promise) {
 				assert.isFunction(promise.then);
 			});
 		});

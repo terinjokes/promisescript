@@ -20,7 +20,7 @@ function loadScript(script) {
 function loadScriptIE(script) {
 	return new ES6Promise(function(resolve) {
 		script.onreadystatechange = function() {
-			if (this.readyState !== 'complete') {
+			if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
 				return;
 			}
 

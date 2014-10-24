@@ -20,6 +20,7 @@
     "karma-mocha-reporter": "^0.3.1",
     "karma-sauce-launcher": "^0.2.10",
     "karma-tape-reporter": "^1.0.1",
+    "lodash": "^2.4.1",
     "mocha": "^2.0.1",
     "proclaim": "^2.0.0"
   },
