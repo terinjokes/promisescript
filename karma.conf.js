@@ -36,7 +36,7 @@ module.exports = function( config ) {
 		],
 
 		preprocessors : {
-			'tests/**/*.js' : [ 'browserify' ]
+			'tests/*.js' : [ 'browserify' ]
 		},
 
 		sauceLabs : {

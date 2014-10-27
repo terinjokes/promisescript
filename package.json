@@ -14,7 +14,7 @@
     "browserify-istanbul": "^0.1.2",
     "karma": "^0.12.24",
     "karma-beep-reporter": "^0.1.4",
-    "karma-bro": "^0.8.0",
+    "karma-bro": "^0.9.0",
     "karma-coverage": "^0.2.6",
     "karma-mocha": "^0.1.9",
     "karma-mocha-reporter": "^0.3.1",
