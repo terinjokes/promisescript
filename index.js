@@ -39,7 +39,7 @@ function loadStyle(style) {
 
 		style.onerror = function() {
 			this.onload = this.onerror = null;
-			reject();
+			reject(new Error('Failed to load ' + style.src));
 		};
 	});
 }
@@ -59,7 +59,7 @@ function loadStyleIE(style, id) {
 			} catch(e) {
 			}
 
-			return reject();
+			return reject(new Error('Failed to load ' + style.src);
 		};
 	});
 }
