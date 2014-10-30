@@ -26,6 +26,18 @@ describe('promisescript', function() {
 			exposed: 'exposed2'
 		}
 	}, {
+		name: 'JavaScript Objects with a failing exposed',
+		success: {
+			url :'/base/tests/fixtures/success.js',
+			type: 'script',
+			exposed: 'exposed1'
+		},
+		failure: {
+			url :'/base/tests/fixtures/success.js',
+			type: 'script',
+			exposed: 'incorrect'
+		}
+	}, {
 		name: 'Style Sheet URL',
 		success: '/base/tests/fixtures/success.css',
 		failure: '/base/tests/fixtures/404.css'

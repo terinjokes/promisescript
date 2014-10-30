@@ -1,5 +1,6 @@
 'use strict';
 var ES6Promise = require('es6-promise').Promise,
+	checkGlobal = require('./lib/checkGlobal'),
 	doc = global.document,
 	cached = {};
 
@@ -17,6 +18,7 @@ function loadScript(script) {
 	});
 }
 
+/* istanbul ignore next */
 function loadScriptIE(script) {
 	return new ES6Promise(function(resolve) {
 		script.onreadystatechange = function() {
@@ -44,6 +46,7 @@ function loadStyle(style) {
 	});
 }
 
+/* istanbul ignore next */
 function loadStyleIE(style, id) {
 	return new ES6Promise(function(resolve, reject) {
 		style.onload = function() {
@@ -59,15 +62,15 @@ function loadStyleIE(style, id) {
 			} catch(e) {
 			}
 
-			return reject(new Error('Failed to load ' + style.src);
+			return reject(new Error('Failed to load ' + style.src));
 		};
 	});
 }
 
 function resolver(src) {
 	return new ES6Promise(function(resolve) {
-		var head = doc.head || doc.getElementsByTagName('head')[0];
-		var element, loader;
+		var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
+		var element, loader, promise;
 
 		if (src.type === 'style') {
 			element = doc.createElement('link');
@@ -75,15 +78,25 @@ function resolver(src) {
 			element.id = 'load-css-' + random();
 			element.href = src.url;
 
-			loader = typeof element.addEventListener !== 'undefined' ? loadStyle : loadStyleIE;
+			loader = typeof element.addEventListener !== 'undefined' ? loadStyle : /* istanbul ignore next */ loadStyleIE;
 			resolve(loader(element));
 		} else {
 			element = doc.createElement('script');
 			element.charset = 'utf8';
 			element.src = src.url;
 
-			loader = 'onload' in element ? loadScript : loadScriptIE;
-			resolve(loader(element));
+			loader = 'onload' in element ? loadScript : /* istanbul ignore next */ loadScriptIE;
+			promise = loader(element);
+
+			if (src.exposed) {
+				promise = promise.then(function() {
+					if (typeof checkGlobal(src.exposed) === 'undefined') {
+						throw new Error('Failed to load ' + src.url);
+					}
+				});
+			}
+
+			resolve(promise);
 		}
 
 		head.appendChild(element);
