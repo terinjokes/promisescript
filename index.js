@@ -170,6 +170,6 @@ module.exports = function promisescript(srcs) {
   return promises;
 };
 
-module.exports._clear = function clear() {
+module.exports.clear = function clear() {
   cached = {};
 };

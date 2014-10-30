@@ -56,7 +56,7 @@ describe('promisescript', function() {
   _.forEach(tests, function(test) {
     describe(test.name, function() {
       beforeEach(function() {
-        promisescript._clear();
+        promisescript.clear();
       });
 
       describe('single URL', function() {
@@ -111,6 +111,25 @@ describe('promisescript', function() {
           assert.strictEqual(promises[0], promises[1]);
         });
       });
+    });
+  });
+
+  describe('Clearing cache', function() {
+    it('should remove all items from cache when no arguments are passed', function(done) {
+      var successURL = '/base/tests/fixtures/success.js';
+      var promise1, promise2;
+
+      promise1 = promisescript(successURL).then(function() {
+        promisescript.clear();
+
+        promise2 = promisescript(successURL);
+
+        return;
+      }).then(function() {
+        assert.notStrictEqual(promise1, promise2);
+
+        done();
+      })['catch'](done);
     });
   });
 });
