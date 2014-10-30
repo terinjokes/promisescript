@@ -28,7 +28,7 @@ function loadRecaptcha() {
   });
 }
 
-loadRecaptcha.then(function() {
+loadRecaptcha().then(function() {
   console.log(Recaptcha.get_challenge());
 }).catch(function(e) {
   console.error('An error loading or executing Recaptcha has occured: ', e.message);
