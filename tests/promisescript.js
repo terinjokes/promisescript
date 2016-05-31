@@ -1,8 +1,8 @@
 'use strict';
 /* globals describe, it, beforeEach */
 var assert = require('proclaim'),
-  promisescript = require('../index'),
-  _ = require('lodash');
+    promisescript = require('../index'),
+    _ = require('lodash');
 
 describe('promisescript', function() {
   it('should export a function', function() {
@@ -10,10 +10,22 @@ describe('promisescript', function() {
   });
 
   var tests = [{
+    name: 'JSON URL',
+    success: '/base/tests/fixtures/success.json',
+    failure: '/base/tests/fixtures/404.json'
+  }, {
+    name: 'JSON Object',
+    success: {
+      url: '/base/tests/fixtures/success.json'
+    },
+    failure: {
+      url: '/base/tests/fixtures/404.json'
+    }
+  }, {
     name: 'JavaScript URL',
     success: '/base/tests/fixtures/success.js',
     failure: '/base/tests/fixtures/404.js'
-    }, {
+  }, {
     name: 'JavaScript Objects',
     success: {
       url: '/base/tests/fixtures/success.js',
@@ -25,7 +37,7 @@ describe('promisescript', function() {
       type: 'script',
       exposed: 'exposed2'
     }
-    }, {
+  }, {
     name: 'JavaScript Objects with a failing exposed',
     success: {
       url: '/base/tests/fixtures/success.js',
@@ -37,11 +49,11 @@ describe('promisescript', function() {
       type: 'script',
       exposed: 'incorrect'
     }
-    }, {
+  }, {
     name: 'Style Sheet URL',
     success: '/base/tests/fixtures/success.css',
     failure: '/base/tests/fixtures/404.css'
-    }, {
+  }, {
     name: 'Style Sheet Object',
     success: {
       url: '/base/tests/fixtures/success.css',

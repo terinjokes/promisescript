@@ -1,6 +1,6 @@
 # Promise Script
 
-> A simple JavaScript and CSS loader built using Promises.
+> A simple JavaScript, JSON, and CSS loader built using Promises.
 
 ## Install
 
@@ -41,7 +41,7 @@ loadRecaptcha().then(function() {
 A source object is fully specified when it contains three properties:
 
 * `url`, the URL that should be fetched
-* `type`, either "script" or "style", which defines the type of the URL being fetched.
+* `type`, one of "script", "style", or "json" which defines the type of the URL being fetched.
 * `exposed`, a string that is checked against the global object to determine if the script successfully loaded.
   A deeply nested property can be checked by providing a dot-separated string.
   This property is not required, but required to check if a script loaded successfully in Internet Explorer, as this browser does not have an error event.
