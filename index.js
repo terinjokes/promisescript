@@ -81,7 +81,7 @@ function resolver(src) {
         loader = typeof element.addEventListener !== 'undefined' ? loadStyle : /* istanbul ignore next */ loadStyleIE;
         resolve(loader(element));
         head.appendChild(element);
-      } else if (/\.json$/.test(src.url)) {
+      } else if (src.type === 'xhr') {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', src.url, true);
         xhr.onreadystatechange = function () {
@@ -122,14 +122,26 @@ function resolver(src) {
     });
 }
 
+var CSS_REGEXP = /\.css$/;
+var JS_REGEXP = /\.js$/;
+
 function normalizeSource(src) {
   if (isPlainObject(src)) {
     return src;
   }
 
+  var type;
+  if (CSS_REGEXP.test(src)) {
+    type = 'style';
+  } else if (JS_REGEXP.test(src)) {
+    type = 'script';
+  } else {
+    type = 'xhr';
+  }
+
   return {
     url: src,
-    type: /\.css$/.test(src) ? 'style' : 'script'
+    type: type
   };
 }
 
