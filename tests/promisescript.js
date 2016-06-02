@@ -1,11 +1,11 @@
 'use strict';
 /* globals describe, it, beforeEach */
-var assert = require('proclaim'),
-    promisescript = require('../index'),
-    _ = require('lodash');
+var assert = require('proclaim');
+var _ = require('lodash');
+var promisescript = require('../index');
 
-describe('promisescript', function() {
-  it('should export a function', function() {
+describe('promisescript', function () {
+  it('should export a function', function () {
     assert.isFunction(promisescript);
   });
 
@@ -65,60 +65,60 @@ describe('promisescript', function() {
     }
   }];
 
-  _.forEach(tests, function(test) {
-    describe(test.name, function() {
-      beforeEach(function() {
+  _.forEach(tests, function (test) {
+    describe(test.name, function () {
+      beforeEach(function () {
         promisescript.clear();
       });
 
-      describe('single URL', function() {
-        it('should return a promise', function() {
+      describe('single URL', function () {
+        it('should return a promise', function () {
           var promise = promisescript(test.success);
           assert.isFunction(promise.then);
         });
 
-        it('should the same promise for the same URL', function() {
+        it('should the same promise for the same URL', function () {
           var promise1 = promisescript(test.success);
           var promise2 = promisescript(test.success);
           assert.strictEqual(promise1, promise2);
         });
 
-        it('should be resolved if the URL loaded successfully', function(done) {
+        it('should be resolved if the URL loaded successfully', function (done) {
           var promise = promisescript(test.success);
-          promise.then(function() {
+          promise.then(function () {
             done();
-          })['catch'](done);
+          }).catch(done);
         });
 
-        it('should be rejected if the URL is not loaded successfully', function(done) {
+        it('should be rejected if the URL is not loaded successfully', function (done) {
           var promise = promisescript(test.failure);
-          promise.then(function() {
+          promise.then(function () {
             assert.fail('resolved', 'rejected', 'Promise should have been rejected');
-          })['catch'](function() {
+          }).catch(function () {
             done();
           });
         });
       });
 
-      describe('multiple URLs', function() {
-        it('should return an array', function() {
+      describe('multiple URLs', function () {
+        it('should return an array', function () {
           var promises = promisescript([test.success, test.failure]);
           assert.isArray(promises);
         });
 
-        it('should have length 2', function() {
+        it('should have length 2', function () {
           var promises = promisescript([test.success, test.failure]);
           assert.lengthEquals(promises, 2);
         });
 
-        it('should should be a promise in each position', function() {
+        it('should should be a promise in each position', function () {
           var promises = promisescript([test.success, test.failure]);
-          _.forEach(promises, function(promise) {
+          _.forEach(promises, function (promise) {
             assert.isFunction(promise.then);
           });
         });
 
-        it('should return the same promise for the same URL', function() {
+        it('should return the same promise for the same URL', function () {
           var promises = promisescript([test.success, test.success]);
           assert.strictEqual(promises[0], promises[1]);
         });
@@ -126,22 +126,23 @@ describe('promisescript', function() {
     });
   });
 
-  describe('Clearing cache', function() {
-    it('should remove all items from cache when no arguments are passed', function(done) {
+  describe('Clearing cache', function () {
+    it('should remove all items from cache when no arguments are passed', function (done) {
       var successURL = '/base/tests/fixtures/success.js';
-      var promise1, promise2;
+      var promise1;
+      var promise2;
 
-      promise1 = promisescript(successURL).then(function() {
+      promise1 = promisescript(successURL).then(function () {
         promisescript.clear();
 
         promise2 = promisescript(successURL);
 
         return;
-      }).then(function() {
+      }).then(function () {
         assert.notStrictEqual(promise1, promise2);
 
         done();
-      })['catch'](done);
+      }).catch(done);
     });
   });
 });

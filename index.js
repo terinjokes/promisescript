@@ -1,126 +1,127 @@
 'use strict';
-var ES6Promise = require('es6-promise').Promise,
-  checkGlobal = require('./lib/checkGlobal'),
-  doc = global.document,
-  cached = {};
+var ES6Promise = require('es6-promise').Promise;
+var checkGlobal = require('./lib/check-global');
+var doc = global.document;
+var cached = {};
 
 function loadScript(script) {
-  return new ES6Promise(function(resolve, reject) {
-      script.onload = function() {
-        this.onload = this.onerror = null;
-        resolve();
-      };
+  return new ES6Promise(function (resolve, reject) {
+    script.onload = function () {
+      this.onload = this.onerror = null;
+      resolve();
+    };
 
-      script.onerror = function() {
-        this.onload = this.onerror = null;
-        reject(new Error('Failed to load ' + script.src));
-      };
-    });
+    script.onerror = function () {
+      this.onload = this.onerror = null;
+      reject(new Error('Failed to load ' + script.src));
+    };
+  });
 }
 
 /* istanbul ignore next */
 function loadScriptIE(script) {
-  return new ES6Promise(function(resolve) {
-      script.onreadystatechange = function() {
-        if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
-          return;
-        }
+  return new ES6Promise(function (resolve) {
+    script.onreadystatechange = function () {
+      if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
+        return;
+      }
 
-        this.onreadystatechange = null;
-        resolve();
-      };
-    });
+      this.onreadystatechange = null;
+      resolve();
+    };
+  });
 }
 
 function loadStyle(style) {
-  return new ES6Promise(function(resolve, reject) {
-      style.onload = function() {
-        this.onload = this.onerror = null;
-        resolve();
-      };
+  return new ES6Promise(function (resolve, reject) {
+    style.onload = function () {
+      this.onload = this.onerror = null;
+      resolve();
+    };
 
-      style.onerror = function() {
-        this.onload = this.onerror = null;
-        reject(new Error('Failed to load ' + style.src));
-      };
-    });
+    style.onerror = function () {
+      this.onload = this.onerror = null;
+      reject(new Error('Failed to load ' + style.src));
+    };
+  });
 }
 
 /* istanbul ignore next */
 function loadStyleIE(style, id) {
-  return new ES6Promise(function(resolve, reject) {
-      style.onload = function() {
-        var i = doc.styleSheets.length, cur;
+  return new ES6Promise(function (resolve, reject) {
+    style.onload = function () {
+      var i = doc.styleSheets.length;
+      var cur;
 
-
-        try {
-          while (i--) {
-            cur = doc.styleSheets[i];
-            if (cur.id === id && cur.cssText) {
-              return resolve();
-            }
+      try {
+        while (i--) {
+          cur = doc.styleSheets[i];
+          if (cur.id === id && cur.cssText) {
+            return resolve();
           }
-        } catch ( e ) {}
+        }
+      } catch (e) {}
 
-        return reject(new Error('Failed to load ' + style.src));
-      };
-    });
+      return reject(new Error('Failed to load ' + style.src));
+    };
+  });
 }
 
 function resolver(src) {
-  return new ES6Promise(function(resolve, reject) {
-      var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
-      var element, loader, promise;
+  return new ES6Promise(function (resolve, reject) {
+    var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
+    var element;
+    var loader;
+    var promise;
 
-      if (src.type === 'style') {
-        element = doc.createElement('link');
-        element.rel = 'stylesheet';
-        element.id = 'load-css-' + random();
-        element.href = src.url;
+    if (src.type === 'style') {
+      element = doc.createElement('link');
+      element.rel = 'stylesheet';
+      element.id = 'load-css-' + random();
+      element.href = src.url;
 
-        loader = typeof element.addEventListener !== 'undefined' ? loadStyle : /* istanbul ignore next */ loadStyleIE;
-        resolve(loader(element));
-        head.appendChild(element);
-      } else if (src.type === 'json') {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', src.url, true);
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4 /* XMLHttpRequest.DONE */) {
-            xhr.onreadystatechange = null;
-            if (xhr.status >= 200 && xhr.status < 400) {
-              try {
-                resolve(JSON.parse(xhr.responseText));
-              } catch (error) {
-                reject(error);
-              }
-            } else {
-              reject(new Error('Failed to load ' + src.url));
+      loader = typeof element.addEventListener === 'undefined' ? /* istanbul ignore next */ loadStyleIE : loadStyle;
+      resolve(loader(element));
+      head.appendChild(element);
+    } else if (src.type === 'json') {
+      var xhr = new global.XMLHttpRequest();
+      xhr.open('GET', src.url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 /* XMLHttpRequest.DONE */) {
+          xhr.onreadystatechange = null;
+          if (xhr.status >= 200 && xhr.status < 400) {
+            try {
+              resolve(JSON.parse(xhr.responseText));
+            } catch (error) {
+              reject(error);
             }
+          } else {
+            reject(new Error('Failed to load ' + src.url));
           }
-        };
-        xhr.withCredentials = !!src.withCredentials;
-        xhr.send();
-      } else {
-        element = doc.createElement('script');
-        element.charset = 'utf8';
-        element.src = src.url;
-
-        loader = 'onload' in element ? loadScript : /* istanbul ignore next */ loadScriptIE;
-        promise = loader(element);
-
-        if (src.exposed) {
-          promise = promise.then(function() {
-            if (typeof checkGlobal(src.exposed) === 'undefined') {
-              throw new Error('Failed to load ' + src.url);
-            }
-          });
         }
+      };
+      xhr.withCredentials = Boolean(src.withCredentials);
+      xhr.send();
+    } else {
+      element = doc.createElement('script');
+      element.charset = 'utf8';
+      element.src = src.url;
 
-        resolve(promise);
-        head.appendChild(element);
+      loader = 'onload' in element ? loadScript : /* istanbul ignore next */ loadScriptIE;
+      promise = loader(element);
+
+      if (src.exposed) {
+        promise = promise.then(function () {
+          if (typeof checkGlobal(src.exposed) === 'undefined') {
+            throw new Error('Failed to load ' + src.url);
+          }
+        });
       }
 
-    });
+      resolve(promise);
+      head.appendChild(element);
+    }
+  });
 }
 
 var CSS_REGEXP = /\.css$/;
@@ -160,18 +161,18 @@ function random() {
   return ~~(Math.random() * (1E5 + 1));
 }
 
-var isArray = Array.isArray || /* istanbul ignore next */ function(val) {
-    return ({}).toString.call(val) === '[object Array]';
-  };
+var isArray = Array.isArray || /* istanbul ignore next */ function (val) {
+  return ({}).toString.call(val) === '[object Array]';
+};
 
 module.exports = function promisescript(srcs) {
-  var promises = [],
-    shouldReturnArray = true,
-    promise,
-    i,
-    length,
-    src,
-    key;
+  var promises = [];
+  var shouldReturnArray = true;
+  var promise;
+  var i;
+  var length;
+  var src;
+  var key;
 
   if (!isArray(srcs)) {
     srcs = [srcs];

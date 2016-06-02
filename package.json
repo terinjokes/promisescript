@@ -25,7 +25,8 @@
     "lodash": "^4.13.1",
     "mocha": "^2.0.1",
     "proclaim": "^3.4.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "xo": "^0.15.1"
   },
   "homepage": "https://github.com/terinjokes/promisescript",
   "keywords": [
@@ -39,6 +40,12 @@
     "url": "https://github.com/terinjokes/promisescript.git"
   },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start"
+    "test": "xo && ./node_modules/karma/bin/karma start"
+  },
+  "xo": {
+    "space": true,
+    "environments": [
+      "commonjs"
+    ]
   }
 }
