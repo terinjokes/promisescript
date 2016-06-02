@@ -31,8 +31,8 @@ module.exports = function( config ) {
 		frameworks : [ 'browserify', 'mocha' ],
 
 		files : [
-			{pattern: 'tests/*.js', watched: true, included: false, served: false},
-			{pattern: 'tests/fixtures/*', watched: true, included: false, served: true}
+                  'tests/*.js',
+                  {pattern: 'tests/fixtures/*', watched: true, included: false, served: true}
 		],
 
 		preprocessors : {
