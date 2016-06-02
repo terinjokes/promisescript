@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/terinjokes/promisescript/issues",
   "dependencies": {
-    "es6-promise": "^3.2.1"
+    "es6-promise": ">=2 <4"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
