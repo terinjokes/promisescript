@@ -33,6 +33,12 @@ loadRecaptcha().then(function() {
 }).catch(function(e) {
   console.error('An error loading or executing Recaptcha has occured: ', e.message);
 });
+
+promisescript('/some.json').then(function(result) {
+  // If the URL ends in .json, the result of the response body will be parsed
+  // into JSON automatically and passed to the `then` callback
+  console.log(result.attr);
+});
 ```
 
 ## API

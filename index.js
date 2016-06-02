@@ -68,7 +68,7 @@ function loadStyleIE(style, id) {
 }
 
 function resolver(src) {
-  return new ES6Promise(function(resolve) {
+  return new ES6Promise(function(resolve, reject) {
       var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
       var element, loader, promise;
 
@@ -80,6 +80,25 @@ function resolver(src) {
 
         loader = typeof element.addEventListener !== 'undefined' ? loadStyle : /* istanbul ignore next */ loadStyleIE;
         resolve(loader(element));
+        head.appendChild(element);
+      } else if (src.type === 'json') {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', src.url, true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              try {
+                resolve(JSON.parse(xhr.responseText));
+              } catch (error) {
+                reject(error);
+              }
+            } else if (xhr.status >= 400) {
+              reject(new Error('Failed to load ' + src.url));
+            }
+          }
+        }
+        xhr.withCredentials = !!src.withCredentials;
+        xhr.send();
       } else {
         element = doc.createElement('script');
         element.charset = 'utf8';
@@ -97,20 +116,32 @@ function resolver(src) {
         }
 
         resolve(promise);
+        head.appendChild(element);
       }
 
-      head.appendChild(element);
     });
 }
+
+var CSS_REGEXP = /\.css$/;
+var JS_REGEXP = /\.js$/;
 
 function normalizeSource(src) {
   if (isPlainObject(src)) {
     return src;
   }
 
+  var type;
+  if (CSS_REGEXP.test(src)) {
+    type = 'style';
+  } else if (JS_REGEXP.test(src)) {
+    type = 'script';
+  } else {
+    type = 'json';
+  }
+
   return {
     url: src,
-    type: /\.css$/.test(src) ? 'style' : 'script'
+    type: type
   };
 }
 
