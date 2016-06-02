@@ -81,7 +81,7 @@ function resolver(src) {
         loader = typeof element.addEventListener !== 'undefined' ? loadStyle : /* istanbul ignore next */ loadStyleIE;
         resolve(loader(element));
         head.appendChild(element);
-      } else if (src.type === 'xhr') {
+      } else if (src.type === 'json') {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', src.url, true);
         xhr.onreadystatechange = function () {
@@ -136,7 +136,7 @@ function normalizeSource(src) {
   } else if (JS_REGEXP.test(src)) {
     type = 'script';
   } else {
-    type = 'xhr';
+    type = 'json';
   }
 
   return {
