@@ -1,12 +1,12 @@
 'use strict';
 /* globals describe, it, beforeEach */
-var assert = require('proclaim');
+var assert = require('power-assert');
 var _ = require('lodash');
 var promisescript = require('../index');
 
 describe('promisescript', function () {
   it('should export a function', function () {
-    assert.isFunction(promisescript);
+    assert(typeof promisescript === 'function');
   });
 
   var tests = [{
@@ -74,7 +74,7 @@ describe('promisescript', function () {
       describe('single URL', function () {
         it('should return a promise', function () {
           var promise = promisescript(test.success);
-          assert.isFunction(promise.then);
+          assert(typeof promise.then === 'function');
         });
 
         it('should the same promise for the same URL', function () {
@@ -83,19 +83,17 @@ describe('promisescript', function () {
           assert.strictEqual(promise1, promise2);
         });
 
-        it('should be resolved if the URL loaded successfully', function (done) {
-          var promise = promisescript(test.success);
-          promise.then(function () {
-            done();
-          }).catch(done);
+        it('should be resolved if the URL loaded successfully', function () {
+          return promisescript(test.success);
         });
 
-        it('should be rejected if the URL is not loaded successfully', function (done) {
+        it('should be rejected if the URL is not loaded successfully', function () {
           var promise = promisescript(test.failure);
-          promise.then(function () {
+
+          return promise.then(function () {
             assert.fail('resolved', 'rejected', 'Promise should have been rejected');
-          }).catch(function () {
-            done();
+          }, function () {
+            // do nothing
           });
         });
       });
@@ -103,18 +101,18 @@ describe('promisescript', function () {
       describe('multiple URLs', function () {
         it('should return an array', function () {
           var promises = promisescript([test.success, test.failure]);
-          assert.isArray(promises);
+          assert(Array.isArray(promises));
         });
 
         it('should have length 2', function () {
           var promises = promisescript([test.success, test.failure]);
-          assert.lengthEquals(promises, 2);
+          assert(promises.length === 2);
         });
 
         it('should should be a promise in each position', function () {
           var promises = promisescript([test.success, test.failure]);
           _.forEach(promises, function (promise) {
-            assert.isFunction(promise.then);
+            assert(typeof promise.then === 'function');
           });
         });
 
@@ -127,7 +125,7 @@ describe('promisescript', function () {
   });
 
   describe('Clearing cache', function () {
-    it('should remove all items from cache when no arguments are passed', function (done) {
+    it('should remove all items from cache when no arguments are passed', function () {
       var successURL = '/base/tests/fixtures/success.js';
       var promise1;
       var promise2;
@@ -140,9 +138,9 @@ describe('promisescript', function () {
         return;
       }).then(function () {
         assert.notStrictEqual(promise1, promise2);
+      });
 
-        done();
-      }).catch(done);
+      return promise1;
     });
   });
 });

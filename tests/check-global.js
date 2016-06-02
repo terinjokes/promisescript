@@ -1,6 +1,6 @@
 'use strict';
 /* globals describe, it */
-var assert = require('proclaim');
+var assert = require('power-assert');
 var checkGlobal = require('../lib/check-global');
 
 describe('checkGlobal', function () {
@@ -35,12 +35,12 @@ describe('checkGlobal', function () {
   it('should return undefined if the simple global doesn\'t exist', function () {
     var check = checkGlobal('test3');
 
-    assert.isUndefined(check);
+    assert.strictEqual(check, undefined);
   });
 
   it('should return undefined if the complex global doesn\'t exist', function () {
     var check = checkGlobal('test4.deeply.nested');
 
-    assert.isUndefined(check);
+    assert.strictEqual(check);
   });
 });

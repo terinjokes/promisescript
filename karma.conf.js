@@ -56,6 +56,7 @@ module.exports = function (config) {
     browserify: {
       debug: true,
       transform: isCI ? null : [
+        ['espowerify'],
         ['browserify-istanbul', {ignore: ['**/*.handlebars']}]
       ]
     },

@@ -13,6 +13,7 @@
   "devDependencies": {
     "browserify": "^13.0.1",
     "browserify-istanbul": "^2.0.0",
+    "espowerify": "^1.0.0",
     "istanbul": "^0.4.3",
     "karma": "^0.13.22",
     "karma-beep-reporter": "^0.1.4",
@@ -24,7 +25,7 @@
     "karma-tape-reporter": "^1.0.1",
     "lodash": "^4.13.1",
     "mocha": "^2.0.1",
-    "proclaim": "^3.4.1",
+    "power-assert": "^1.4.1",
     "watchify": "^3.7.0",
     "xo": "^0.15.1"
   },
