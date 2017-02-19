@@ -1,11 +1,11 @@
 'use strict';
-var ES6Promise = require('es6-promise').Promise;
+var Promise = require('any-promise');
 var checkGlobal = require('./lib/check-global');
 var doc = global.document;
 var cached = {};
 
 function loadScript(script) {
-  return new ES6Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     script.onload = function () {
       this.onload = this.onerror = null;
       resolve();
@@ -20,7 +20,7 @@ function loadScript(script) {
 
 /* istanbul ignore next */
 function loadScriptIE(script) {
-  return new ES6Promise(function (resolve) {
+  return new Promise(function (resolve) {
     script.onreadystatechange = function () {
       if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
         return;
@@ -33,7 +33,7 @@ function loadScriptIE(script) {
 }
 
 function loadStyle(style) {
-  return new ES6Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     style.onload = function () {
       this.onload = this.onerror = null;
       resolve();
@@ -48,7 +48,7 @@ function loadStyle(style) {
 
 /* istanbul ignore next */
 function loadStyleIE(style, id) {
-  return new ES6Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     style.onload = function () {
       var i = doc.styleSheets.length;
       var cur;
@@ -68,7 +68,7 @@ function loadStyleIE(style, id) {
 }
 
 function resolver(src) {
-  return new ES6Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
     var element;
     var loader;
