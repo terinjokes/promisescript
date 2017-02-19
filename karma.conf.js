@@ -27,7 +27,7 @@ var isCI = Boolean(process.env.BUILD_NUMBER) && Boolean(process.env.BUILD_BRANCH
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['browserify', 'mocha'],
+    frameworks: ['promise', 'browserify', 'mocha'],
 
     files: [
       'tests/*.js',
