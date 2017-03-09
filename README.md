@@ -1,5 +1,7 @@
 # Promise Script
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/terinjokes/promisescript.svg)](https://greenkeeper.io/)
+
 > A simple JavaScript, JSON, and CSS loader built using Promises.
 
 ## Install
