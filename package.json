@@ -8,14 +8,14 @@
   },
   "bugs": "https://github.com/terinjokes/promisescript/issues",
   "dependencies": {
-    "es6-promise": ">=2 <4"
+    "es6-promise": ">=4.1.0"
   },
   "devDependencies": {
-    "browserify": "^13.0.1",
+    "browserify": "^14.1.0",
     "browserify-istanbul": "^2.0.0",
     "espowerify": "^1.0.0",
     "istanbul": "^0.4.3",
-    "karma": "^0.13.22",
+    "karma": "^1.5.0",
     "karma-beep-reporter": "^0.1.4",
     "karma-browserify": "^5.0.5",
     "karma-coverage": "^1.0.0",
@@ -24,10 +24,10 @@
     "karma-sauce-launcher": "^1.0.0",
     "karma-tape-reporter": "^1.0.1",
     "lodash": "^4.13.1",
-    "mocha": "^2.0.1",
+    "mocha": "^3.2.0",
     "power-assert": "^1.4.1",
     "watchify": "^3.7.0",
-    "xo": "^0.15.1"
+    "xo": "^0.17.1"
   },
   "homepage": "https://github.com/terinjokes/promisescript",
   "keywords": [
