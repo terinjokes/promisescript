@@ -5,14 +5,16 @@ var doc = global.document;
 var cached = {};
 
 function loadScript(script) {
-  return new ES6Promise(function (resolve, reject) {
-    script.onload = function () {
-      this.onload = this.onerror = null;
+  return new ES6Promise(function(resolve, reject) {
+    script.onload = function() {
+      this.onload = null;
+      this.onerror = null;
       resolve();
     };
 
-    script.onerror = function () {
-      this.onload = this.onerror = null;
+    script.onerror = function() {
+      this.onload = null;
+      this.onerror = null;
       reject(new Error('Failed to load ' + script.src));
     };
   });
@@ -20,8 +22,8 @@ function loadScript(script) {
 
 /* istanbul ignore next */
 function loadScriptIE(script) {
-  return new ES6Promise(function (resolve) {
-    script.onreadystatechange = function () {
+  return new ES6Promise(function(resolve) {
+    script.onreadystatechange = function() {
       if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
         return;
       }
@@ -33,14 +35,16 @@ function loadScriptIE(script) {
 }
 
 function loadStyle(style) {
-  return new ES6Promise(function (resolve, reject) {
-    style.onload = function () {
-      this.onload = this.onerror = null;
+  return new ES6Promise(function(resolve, reject) {
+    style.onload = function() {
+      this.onload = null;
+      this.onerror = null;
       resolve();
     };
 
-    style.onerror = function () {
-      this.onload = this.onerror = null;
+    style.onerror = function() {
+      this.onload = null;
+      this.onerror = null;
       reject(new Error('Failed to load ' + style.src));
     };
   });
@@ -48,8 +52,8 @@ function loadStyle(style) {
 
 /* istanbul ignore next */
 function loadStyleIE(style, id) {
-  return new ES6Promise(function (resolve, reject) {
-    style.onload = function () {
+  return new ES6Promise(function(resolve, reject) {
+    style.onload = function() {
       var i = doc.styleSheets.length;
       var cur;
 
@@ -68,8 +72,10 @@ function loadStyleIE(style, id) {
 }
 
 function resolver(src) {
-  return new ES6Promise(function (resolve, reject) {
-    var head = doc.head || /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
+  return new ES6Promise(function(resolve, reject) {
+    var head =
+      doc.head ||
+      /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
     var element;
     var loader;
     var promise;
@@ -80,13 +86,15 @@ function resolver(src) {
       element.id = 'load-css-' + random();
       element.href = src.url;
 
-      loader = typeof element.addEventListener === 'undefined' ? /* istanbul ignore next */ loadStyleIE : loadStyle;
+      loader = typeof element.addEventListener === 'undefined'
+        ? /* istanbul ignore next */ loadStyleIE
+        : loadStyle;
       resolve(loader(element));
       head.appendChild(element);
     } else if (src.type === 'json') {
       var xhr = new global.XMLHttpRequest();
       xhr.open('GET', src.url, true);
-      xhr.onreadystatechange = function () {
+      xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 /* XMLHttpRequest.DONE */) {
           xhr.onreadystatechange = null;
           if (xhr.status >= 200 && xhr.status < 400) {
@@ -107,11 +115,13 @@ function resolver(src) {
       element.charset = 'utf8';
       element.src = src.url;
 
-      loader = 'onload' in element ? loadScript : /* istanbul ignore next */ loadScriptIE;
+      loader = 'onload' in element
+        ? loadScript
+        : /* istanbul ignore next */ loadScriptIE;
       promise = loader(element);
 
       if (src.exposed) {
-        promise = promise.then(function () {
+        promise = promise.then(function() {
           if (typeof checkGlobal(src.exposed) === 'undefined') {
             throw new Error('Failed to load ' + src.url);
           }
@@ -153,19 +163,21 @@ function cacheKey(src) {
 }
 
 function isPlainObject(value) {
-  return ({}).toString.call(value) === '[object Object]';
+  return {}.toString.call(value) === '[object Object]';
 }
 
 function random() {
   /* jshint bitwise:false */
-  return ~~(Math.random() * (1E5 + 1));
+  return ~~(Math.random() * (1e5 + 1));
 }
 
-var isArray = Array.isArray || /* istanbul ignore next */ function (val) {
-  return ({}).toString.call(val) === '[object Array]';
-};
+var isArray =
+  Array.isArray ||
+  /* istanbul ignore next */ function(val) {
+    return {}.toString.call(val) === '[object Array]';
+  };
 
-module.exports = function promisescript(srcs) {
+function promisescript(srcs) {
   var promises = [];
   var shouldReturnArray = true;
   var promise;
@@ -184,7 +196,7 @@ module.exports = function promisescript(srcs) {
     src = normalizeSource(srcs[i]);
     key = cacheKey(src);
 
-    // if the result cached, resolve with the original promise;
+    // If the result cached, resolve with the original promise;
     if (cached[key]) {
       promises.push(cached[key]);
       continue;
@@ -201,8 +213,11 @@ module.exports = function promisescript(srcs) {
   }
 
   return promises;
-};
+}
 
-module.exports.clear = function clear() {
+function clear() {
   cached = {};
-};
+}
+
+module.exports = promisescript;
+module.exports.clear = clear;
