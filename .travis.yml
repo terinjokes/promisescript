@@ -1,0 +1,22 @@
+language: node_js
+sudo: false
+dist: trusty
+addons:
+  apt:
+    packages:
+      - google-chrome-stable
+node_js:
+  - 6
+env:
+  - BROWSER: Firefox
+  - BROWSER: Chrome
+matrix:
+  include:
+    - node_js: 6
+      env: LINT_TEST=true
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3
+script:
+  - "if [[ -n $LINT_TEST ]]; then npm run lint; else npm run test -- --browsers $BROWSER --single-run; fi"

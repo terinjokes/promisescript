@@ -1,4 +1,4 @@
-# Promise Script
+# Promise Script [![][travis-shield-img]][travis-shield]
 
 > A simple JavaScript, JSON, and CSS loader built using Promises.
 
@@ -73,3 +73,6 @@ However, this cache can be cleared by calling `promisescript.clear`.
 ## License
 
 MIT
+
+[travis-shield-img]: https://img.shields.io/travis/terinjokes/promisescript/master.svg?label=Travis%20CI&style=flat-square
+[travis-shield]: https://travis-ci.org/terinjokes/promisescript
