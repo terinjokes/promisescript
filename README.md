@@ -68,7 +68,7 @@ However, this cache can be cleared by calling `promisescript.clear`.
 ## Notes
 
 1. If you make multiple requests to the same URL, it will only be fetched once and the same Promise will be returned.
-2. The Promises returned by this module meet the ES6 standard, and are thus barebones; you may wish to coerce it into a Promise of your favorite library.
+2. The Promises returned by this module are native Promises. If you want to use another Promise library please [register it with *Any Promise*](https://github.com/kevinbeaty/any-promise#usage-with-registration).
 
 ## License
 
