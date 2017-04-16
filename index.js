@@ -1,28 +1,30 @@
 'use strict';
-var ES6Promise = require('es6-promise').Promise;
+var Promise = require('any-promise');
 var checkGlobal = require('./lib/check-global');
+var makeErrorCause = require('make-error-cause');
 var doc = global.document;
 var cached = {};
+var LoadError = makeErrorCause('LoadError');
 
 function loadScript(script) {
-  return new ES6Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     script.onload = function() {
       this.onload = null;
       this.onerror = null;
       resolve();
     };
 
-    script.onerror = function() {
+    script.onerror = function(err) {
       this.onload = null;
       this.onerror = null;
-      reject(new Error('Failed to load ' + script.src));
+      reject(new LoadError('Failed to load ' + script.src, err));
     };
   });
 }
 
 /* istanbul ignore next */
 function loadScriptIE(script) {
-  return new ES6Promise(function(resolve) {
+  return new Promise(function(resolve) {
     script.onreadystatechange = function() {
       if (this.readyState !== 'loaded' && this.readyState !== 'complete') {
         return;
@@ -35,24 +37,24 @@ function loadScriptIE(script) {
 }
 
 function loadStyle(style) {
-  return new ES6Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     style.onload = function() {
       this.onload = null;
       this.onerror = null;
       resolve();
     };
 
-    style.onerror = function() {
+    style.onerror = function(err) {
       this.onload = null;
       this.onerror = null;
-      reject(new Error('Failed to load ' + style.src));
+      reject(new LoadError('Failed to load ' + style.src, err));
     };
   });
 }
 
 /* istanbul ignore next */
 function loadStyleIE(style, id) {
-  return new ES6Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     style.onload = function() {
       var i = doc.styleSheets.length;
       var cur;
@@ -66,13 +68,13 @@ function loadStyleIE(style, id) {
         }
       } catch (e) {}
 
-      return reject(new Error('Failed to load ' + style.src));
+      return reject(new LoadError('Failed to load ' + style.src));
     };
   });
 }
 
 function resolver(src) {
-  return new ES6Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     var head =
       doc.head ||
       /* istanbul ignore next */ doc.getElementsByTagName('head')[0];
@@ -104,7 +106,7 @@ function resolver(src) {
               reject(error);
             }
           } else {
-            reject(new Error('Failed to load ' + src.url));
+            reject(new LoadError('Failed to load ' + src.url));
           }
         }
       };
@@ -123,7 +125,7 @@ function resolver(src) {
       if (src.exposed) {
         promise = promise.then(function() {
           if (typeof checkGlobal(src.exposed) === 'undefined') {
-            throw new Error('Failed to load ' + src.url);
+            throw new LoadError('Failed to load ' + src.url);
           }
         });
       }
@@ -221,3 +223,4 @@ function clear() {
 
 module.exports = promisescript;
 module.exports.clear = clear;
+module.exports.LoadError = LoadError;

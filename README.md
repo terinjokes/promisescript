@@ -65,10 +65,16 @@ When utilizing this functionality, this module assumes URLs representing styles 
 To avoid fetching the same URL multiple times, the Promise is cached, which is fine behavior most use cases.
 However, this cache can be cleared by calling `promisescript.clear`.
 
+## Promise Implementation
+To avoid coupling to a specific Promise implementation, this module uses the [`any-promise`][any-promise] module to get a Promise.
+By default, `any-promise` will return the browser's native Promises if found or otherwise throws an error.
+If you need to support browsers that don't have native Promises, or if you prefer another implementation, please see the `any-promise` documentation for how to register.
+
+[any-promise]: https://github.com/kevinbeaty/any-promise
+
 ## Notes
 
 1. If you make multiple requests to the same URL, it will only be fetched once and the same Promise will be returned.
-2. The Promises returned by this module meet the ES6 standard, and are thus barebones; you may wish to coerce it into a Promise of your favorite library.
 
 ## License
 
